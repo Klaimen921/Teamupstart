@@ -1,0 +1,25 @@
+<?php
+return [
+    ['method' => 'GET', 'uri' => '/', 'action' => 'index', 'view' => 'index'],
+    ['method' => 'GET', 'uri' => '/admin', 'action' => 'admin', 'view' => 'admin'],
+    ['method' => 'GET', 'uri' => '/login', 'action' => 'index', 'view' => 'login'],
+    ['method' => 'GET', 'uri' => '/register', 'action' => 'index', 'view' => 'register'],
+    ['method' => 'GET', 'uri' => '/profile', 'action' => 'showProfile', 'view' => 'profile'],
+    ['method' => 'GET', 'uri' => '/logout', 'action' => 'logout'],
+    ['method' => 'GET', 'uri' => '/search', 'action' => 'search', 'view' => 'search'],
+    ['method' => 'GET', 'uri' => '/applications', 'action' => 'showApplications', 'view' => 'applications'],
+    ['method' => 'GET', 'uri' => '/chats', 'action' => 'chats', 'view' => 'chats'],
+    ['method' => 'GET', 'uri' => '/chat', 'action' => 'chat', 'view' => 'chat'],
+    ['method' => 'GET', 'uri' => '/like', 'action' => 'like', 'view' => 'like'],
+    ['method' => 'GET', 'uri' => '/resume_like', 'action' => 'addToFavorites'],
+    ['method' => 'GET', 'uri' => '/info-user', 'action' => 'infoUser', 'view' => 'info-user'],
+    ['method' => 'GET', 'uri' => '/team', 'action' => 'team', 'view' => 'team'],
+    ['method' => 'GET', 'uri' => '/invite_to_team', 'action' => 'inviteToTeam'],
+
+    ['method' => 'POST', 'uri' => '/login', 'action' => 'login'],
+    ['method' => 'POST', 'uri' => '/register', 'action' => 'register'],
+    ['method' => 'POST', 'uri' => '/update_profile', 'action' => 'updateProfile'],
+    ['method' => 'POST', 'uri' => '/change_status_resume', 'action' => 'changeStatusResume'],
+    ['method' => 'POST', 'uri' => '/start_chat', 'action' => 'startChat'],
+    ['method' => 'POST', 'uri' => '/change_invite_status', 'action' => 'changeInviteTeamStatus'],
+];

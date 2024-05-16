@@ -1,0 +1,204 @@
+@import 'theme';
+@import 'text';
+
+@import 'style';
+
+
+
+
+
+* {
+    font-family: "Geologica", sans-serif;
+    margin: 0;
+    outline: none;
+    padding: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
+body,
+html {
+    height: 100%;
+}
+
+.wrapper {
+    min-height: 100%;
+}
+
+.container {
+    max-width: 1440px;
+    width: 95%;
+    margin: auto;
+}
+
+// custom class
+.d-grid {
+    display: grid;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.flex-no-wrap {
+    flex-wrap: nowrap;
+}
+
+
+// 
+.justify-content-center {
+    justify-content: center;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+.justify-content-end {
+    justify-content: flex-end;
+}
+
+.justify-content-between {
+    justify-content: space-between;
+}
+
+.justify-content-end {
+    justify-content: flex-end;
+}
+
+.align-items-end {
+    align-items: end;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.text-center {
+    text-align: center;
+}
+
+
+.text-right {
+    text-align: right;
+}
+
+
+.text-uppercase {
+    text-transform: uppercase;
+}
+
+
+
+// gap
+.gap-80 {
+    gap: 80px;
+}
+
+.gap-40 {
+    gap: 40px;
+}
+
+.gap-32 {
+    gap: 32px;
+}
+
+.gap-24 {
+    gap: 24px;
+}
+
+.gap-20 {
+    gap: 20px;
+}
+
+.gap-16 {
+    gap: 16px;
+}
+
+.gap-12 {
+    gap: 12px;
+}
+
+.gap-8 {
+    gap: 8px;
+}
+
+.gap-4 {
+    gap: 4px;
+}
+
+// 
+
+.plus-lighter {
+    mix-blend-mode: plus-lighter;
+}
+
+// 
+
+.padding-40 {
+    padding: 40px;
+}
+
+.padding-24 {
+    padding: 24px;
+}
+
+.padding-tb-12 {
+    padding: 12px 0;
+}
+
+.padding-tb-8 {
+    padding: 8px 0;
+}
+.padding-ml-8 {
+    padding: 0 8px;
+}
+
+.padding-8 {
+    padding: 8px;
+}
+
+.padding-bottom{
+    padding: 6px 12px;
+}
+
+.padding-16 {
+    padding: 16px;
+}
+
+// 
+
+
+.nowrap {
+    white-space: nowrap;
+}
+
+main {
+    margin: 24px 0;
+}
+
+.border-radius-12 {
+    border-radius: 12px;
+}
+
+.border-radius-6 {
+    border-radius: 6px;
+}
+
+// btn
+
+
+.main-btn {
+    padding: 16px;
+    border-radius: 999px;
+    border: None;
+}
