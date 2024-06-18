@@ -9,13 +9,14 @@ class LikeResume extends Model
         $query = "
     SELECT lr.id, lr.id_user, lr.id_resume, lr.status, 
            u.id AS user_id,
-           u.name AS resume_user_name, 
+           IFNULL(u.name, 'resume from api') AS resume_user_name, 
            r.skills AS resume_skills, 
            r.user_id AS resume_user_id,
-           t.status AS team_status
+           t.status AS team_status,
+           r.unique_new_resume_id
     FROM like_resume lr
     JOIN resume r ON lr.id_resume = r.id
-    JOIN users u ON r.user_id = u.id
+    LEFT JOIN users u ON r.user_id = u.id
     LEFT JOIN team t ON (t.id_user_1 = r.user_id AND t.id_user_2 = ?) OR (t.id_user_1 = ? AND t.id_user_2 = r.user_id)
     WHERE lr.id_user = ? AND lr.status = '1';
 ";

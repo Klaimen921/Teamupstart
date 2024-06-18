@@ -11,6 +11,24 @@ class Resume extends Model
         return mysqli_fetch_assoc($userInfoList);
     }
 
+    public function checkNewResumeById(int $id)
+    {
+        $userResult = mysqli_query($this->connect, "SELECT * FROM `resume` WHERE `unique_new_resume_id` = $id");
+
+        return mysqli_fetch_assoc($userResult);
+    }
+
+    public function checkNewResumeExistsById(int $id)
+    {
+        $checkQuery = "SELECT * FROM `resume` WHERE `unique_new_resume_id` = ?";
+        $checkStmt = $this->connect->prepare($checkQuery);
+        $checkStmt->bind_param("i", $id);
+        $checkStmt->execute();
+
+        return $checkStmt->get_result();
+    }
+
+
     public function checkExistsByUserId(int $id)
     {
         $checkQuery = "SELECT * FROM `resume` WHERE `user_id` = ?";
@@ -24,19 +42,20 @@ class Resume extends Model
     public function all()
     {
         $query = "
-            SELECT resume.*, users.name AS name FROM resume
-                JOIN users ON resume.user_id = users.id";
+            SELECT resume.*, IFNULL(users.name, 'resume from api') AS name FROM resume
+                LEFT JOIN users ON resume.user_id = users.id";
 
         return mysqli_query($this->connect, $query);
     }
 
-    public function create(array $data)
+    public function create(array $data, $isCreateFromFile = false)
     {
-        $insertQuery = "INSERT INTO `resume` (`user_id`, `adress`, `education`, `lang`, `certifications`, `skills`, `description`, `schedule`, `from_price`, `age_user`, `experience`, `languages`, `status`) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $newResumeId = $isCreateFromFile ? $data['unique_new_resume_id'] : 0;
+        $insertQuery = "INSERT INTO `resume` (`user_id`, `adress`, `education`, `lang`, `certifications`, `skills`, `description`, `schedule`, `from_price`, `age_user`, `experience`, `languages`, `status`, `unique_new_resume_id`) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $insertStmt = $this->connect->prepare($insertQuery);
         $insertStmt->bind_param(
-            "issssssssssii",
+            "issssssssssiii",
             $data['user_id'],
             $data['adress'],
             $data['education'],
@@ -49,7 +68,8 @@ class Resume extends Model
             $data['age_user'],
             $data['experience'],
             $data['languages'],
-            $data['status']
+            $data['status'],
+            $newResumeId
         );
 
         if ($insertStmt->execute()) {
@@ -61,26 +81,48 @@ class Resume extends Model
         return $message;
     }
 
-    public function update(array $data)
+    public function update(array $data, $isUpdateFromFile = false)
     {
-        $updateQuery = "UPDATE `resume` SET `adress` = ?, `education` = ?, `lang` = ?, `certifications` = ?, `skills` = ?,
+        if ($isUpdateFromFile) {
+            $newResumeId = $isUpdateFromFile ? $data['unique_new_resume_id'] : 0;
+            $updateQuery = "UPDATE `resume` SET `adress` = ?, `education` = ?, `lang` = ?, `certifications` = ?, `skills` = ?,
+        `description` = ?, `schedule` = ?, `from_price` = ?, `age_user` = ?, `experience` = ?, `languages` = ?, `status` = 0 WHERE `unique_new_resume_id` = ?";
+            $updateStmt = $this->connect->prepare($updateQuery);
+            $updateStmt->bind_param(
+                "sssssssssssi",
+                $data['adress'],
+                $data['education'],
+                $data['languages_known'],
+                $data['certifications'],
+                $data['skills'],
+                $data['description'],
+                $data['schedule'],
+                $data['from_price'],
+                $data['age_user'],
+                $data['experience'],
+                $data['languages'],
+                $newResumeId
+            );
+        } else {
+            $updateQuery = "UPDATE `resume` SET `adress` = ?, `education` = ?, `lang` = ?, `certifications` = ?, `skills` = ?,
         `description` = ?, `schedule` = ?, `from_price` = ?, `age_user` = ?, `experience` = ?, `languages` = ?, `status` = 0 WHERE `user_id` = ?";
-        $updateStmt = $this->connect->prepare($updateQuery);
-        $updateStmt->bind_param(
-            "sssssssssssi",
-            $data['adress'],
-            $data['education'],
-            $data['languages_known'],
-            $data['certifications'],
-            $data['skills'],
-            $data['description'],
-            $data['schedule'],
-            $data['from_price'],
-            $data['age_user'],
-            $data['experience'],
-            $data['languages'],
-            $data['user_id']
-        );
+            $updateStmt = $this->connect->prepare($updateQuery);
+            $updateStmt->bind_param(
+                "sssssssssssi",
+                $data['adress'],
+                $data['education'],
+                $data['languages_known'],
+                $data['certifications'],
+                $data['skills'],
+                $data['description'],
+                $data['schedule'],
+                $data['from_price'],
+                $data['age_user'],
+                $data['experience'],
+                $data['languages'],
+                $data['user_id']
+            );
+        }
 
         if ($updateStmt->execute()) {
             $message = 'success';
@@ -117,20 +159,21 @@ class Resume extends Model
         $query = "SELECT 
             resume.id AS resume_id,
             users.id AS user_id,
-            users.name AS user_name,
+            IFNULL(users.name, 'resume from api') AS user_name,
             resume.adress,
             resume.education,
             resume.languages,
             resume.certifications,
             resume.skills,
             resume.from_price,
-            resume.description
+            resume.description,
+            resume.unique_new_resume_id
           FROM 
             resume
-          JOIN 
+          LEFT JOIN
             users ON resume.user_id = users.id
           WHERE
-            resume.status = 2";
+            (resume.status = 2 or unique_new_resume_id > 0)";
 
         $selectedSkills = $data['selectedSkills'];
         $schedule = $data['schedule'];
@@ -193,5 +236,30 @@ class Resume extends Model
         }
 
         return $result;
+    }
+
+    public function getMediumTime()
+    {
+        $mediumTime = 0;
+        $query = "
+            SELECT team.created_at as team_created_at, resume.created_at as resume_created_at FROM resume
+        JOIN team ON resume.user_id = team.id_user_2";
+        $res = mysqli_query($this->connect, $query);
+
+        $arr = mysqli_fetch_all($res);
+        $count = count($arr);
+        $diff = 0;
+        foreach ($arr as $item) {
+            $toTime = strtotime($item[0]);
+            $fromTime = strtotime($item[1]);
+            $diff+= round(abs($toTime - $fromTime) / 60,2);
+
+        }
+
+        if ($diff > 0 && $count > 0) {
+            $mediumTime = round($diff/$count,2);
+        }
+
+        return $mediumTime;
     }
 }

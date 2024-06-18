@@ -1,5 +1,5 @@
 <?php
-$skills         = $usersData['skills'];
+$skills         = $usersData['skills'] ?? '';
 $selectedSkills = explode(', ', $skills);
 echo '<div class="form__skills d-flex gap-8 flex-wrap">';
 $projectTypes = [

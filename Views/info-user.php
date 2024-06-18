@@ -15,7 +15,7 @@ require_once './partials/site/header.php';
                     </div>
                 </div>
                 <div class="d-flex align-items-center gap-12">
-                    <?php if ($id != $_SESSION['user_id']): ?>
+                    <?php if (!$resumeFromApi && $id != $_SESSION['user_id']): ?>
                         <a href="/chat?id=<?= $id ?>">
                             <button class="padding-bottom btn-form btn-large surface-action text-on-action">Написати
                                 користувачу</button>
@@ -91,12 +91,10 @@ require_once './partials/site/header.php';
                                 </div>
                             </div>
                         </div>
-
                         <div class="user-bio d-flex flex-column gap-16">
                             <h5 class="text-primary">User skills</h5>
                             <p class="text-action"><?= $usersData['skills'] ?></p>
                         </div>
-
                         <div class="user-bio d-flex flex-column gap-16">
                             <h5 class="text-primary">User description</h5>
                             <textarea class="body-m-regular text-primary border-grey padding-8 border-radius-6" readonly
@@ -110,5 +108,4 @@ require_once './partials/site/header.php';
     </section>
 </main>
 </div>
-
 <?php require_once './partials/site/footer.php'; ?>

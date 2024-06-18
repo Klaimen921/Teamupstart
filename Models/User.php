@@ -55,4 +55,23 @@ class User extends Model
 
         return mysqli_query($this->connect, $insertQuery);
     }
+
+    public function getRate($countResume)
+    {
+        $rate = 0;
+        $query = "
+            SELECT DISTINCT messages.chat_id FROM messages
+        JOIN users ON messages.sender_id = users.id
+        WHERE users.role = 'employer'";
+
+        $result = mysqli_query($this->connect, $query);
+        $arr = mysqli_fetch_all($result);
+        $countRequestFromEmployer = count($arr);
+
+        if ($countRequestFromEmployer > 0 && $countResume > 0) {
+            $rate = $countRequestFromEmployer/$countResume;
+        }
+
+        return round($rate,2);
+    }
 }

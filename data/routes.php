@@ -15,11 +15,14 @@ return [
     ['method' => 'GET', 'uri' => '/info-user', 'action' => 'infoUser', 'view' => 'info-user'],
     ['method' => 'GET', 'uri' => '/team', 'action' => 'team', 'view' => 'team'],
     ['method' => 'GET', 'uri' => '/invite_to_team', 'action' => 'inviteToTeam'],
+    ['method' => 'GET', 'uri' => '/api/get_new_resume', 'action' => 'getListNewResume'],
 
+    ['method' => 'POST', 'uri' => '/update_new_resume', 'action' => 'updateNewResume'],
     ['method' => 'POST', 'uri' => '/login', 'action' => 'login'],
     ['method' => 'POST', 'uri' => '/register', 'action' => 'register'],
     ['method' => 'POST', 'uri' => '/update_profile', 'action' => 'updateProfile'],
     ['method' => 'POST', 'uri' => '/change_status_resume', 'action' => 'changeStatusResume'],
     ['method' => 'POST', 'uri' => '/start_chat', 'action' => 'startChat'],
     ['method' => 'POST', 'uri' => '/change_invite_status', 'action' => 'changeInviteTeamStatus'],
+    ['method' => 'POST', 'uri' => '/update_chat', 'action' => 'longPoolingChat'],
 ];

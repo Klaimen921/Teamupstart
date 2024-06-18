@@ -1,6 +1,4 @@
-<?php
-require_once './partials/site/header.php';
-?>
+<?php require_once './partials/site/header.php'; ?>
 <main class="d-flex flex-column gap-40">
     <section class="profile-section">
         <div class="container">
@@ -18,7 +16,7 @@ require_once './partials/site/header.php';
                                     <p><?= htmlspecialchars($row['resume_skills']) ?></p>
                                 </div>
                                 <div class="d-flex gap-8">
-                                    <a href="/info-user?id=<?= $row['resume_user_id'] ?>"
+                                    <a href="<?php echo $row['unique_new_resume_id'] > 0 ? '/info-user?newResumeId='.$row['unique_new_resume_id']: '/info-user?id='.$row['resume_user_id'] ?>"
                                         class="btn-small padding-bottom surface-action border-radius-12 text-on-action">Details</a>
                                     <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 'employer'): ?>
                                         <?php if ($row['team_status'] == ''): ?>
@@ -42,8 +40,5 @@ require_once './partials/site/header.php';
         </div>
     </section>
 </main>
-    </div>
-<?php
-// Підключаємо файл підвалу
-require_once './partials/site/footer.php';
-?>
+</div>
+<?php require_once './partials/site/footer.php'; ?>

@@ -7,6 +7,6 @@ ini_set('display_errors', 1);
 
 include 'System/autoload.php';
 include 'System/Router.php';
-$routes = include("data/routes.php");
+$routes = include('data/routes.php');
 $router = new Router($routes);
 $router->run();

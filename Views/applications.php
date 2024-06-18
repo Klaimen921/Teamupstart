@@ -39,9 +39,5 @@ require_once './partials/site/header.php';
         </div>
     </section>
 </main>
-
 </div>
-
-<?php
-require_once './partials/site/footer.php';
-?>
+<?php require_once './partials/site/footer.php'; ?>

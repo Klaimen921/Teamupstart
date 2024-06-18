@@ -1,6 +1,4 @@
-<?php
-require_once './partials/site/header.php';
-?>
+<?php require_once './partials/site/header.php'; ?>
 <main class="d-flex flex-column gap-40">
     <section class="profile-section">
         <div class="container">
@@ -31,9 +29,7 @@ require_once './partials/site/header.php';
                                     </option>
                                     <option value="day" <?php echo ($schedule == 'day') ? 'selected' : ''; ?>>day</option>
                                 </select>
-
                             </div>
-
                             <div class="field-wrapper flex-1  d-flex flex-column gap-4">
                                 <p class="body-m-normal">Salary range</p>
                                 <div class="d-flex gap-12">
@@ -43,19 +39,14 @@ require_once './partials/site/header.php';
                                         value="<?= $toPrice ?>">
                                 </div>
                             </div>
-
                             <div class="field-wrapper flex-1 d-flex flex-column gap-4">
                                 <p class="body-m-normal">Age</p>
                                 <select class="border-grey" name="age_user" id="">
                                     <option value="">all</option>
-                                    <option value="> 20" <?php echo ($ageFilter == '> 20') ? 'selected' : ''; ?>> > 20
-                                    </option>
-                                    <option value="20 - 30" <?php echo ($ageFilter == '20 - 30') ? 'selected' : ''; ?>>20
-                                        - 30</option>
-                                    <option value="30 - 40" <?php echo ($ageFilter == '30 - 40') ? 'selected' : ''; ?>>30
-                                        - 40</option>
-                                    <option value="40 >" <?php echo ($ageFilter == '40 >') ? 'selected' : ''; ?>>40 >
-                                    </option>
+                                    <option value="> 20" <?php echo ($ageFilter == '> 20') ? 'selected' : ''; ?>> > 20</option>
+                                    <option value="20 - 30" <?php echo ($ageFilter == '20 - 30') ? 'selected' : ''; ?>>20 - 30</option>
+                                    <option value="30 - 40" <?php echo ($ageFilter == '30 - 40') ? 'selected' : ''; ?>>30 - 40</option>
+                                    <option value="40 >" <?php echo ($ageFilter == '40 >') ? 'selected' : ''; ?>>40 ></option>
                                 </select>
                             </div>
 
@@ -63,23 +54,17 @@ require_once './partials/site/header.php';
                                 <p class="body-m-normal">Experience</p>
                                 <select class="border-grey" name="experience" id="">
                                     <option value="">all</option>
-                                    <option value="> 1" <?php echo ($experienceFilter == '> 1') ? 'selected' : ''; ?>> >1
-                                    </option>
-                                    <option value="1" <?php echo ($experienceFilter == '1') ? 'selected' : ''; ?>>1
-                                    </option>
-                                    <option value="2" <?php echo ($experienceFilter == '2') ? 'selected' : ''; ?>>2
-                                    </option>
-                                    <option value="3" <?php echo ($experienceFilter == '3') ? 'selected' : ''; ?>>3
-                                    </option>
-                                    <option value="4+" <?php echo ($experienceFilter == '4+') ? 'selected' : ''; ?>>4+
-                                    </option>
+                                    <option value="> 1" <?php echo ($experienceFilter == '> 1') ? 'selected' : ''; ?>> >1</option>
+                                    <option value="1" <?php echo ($experienceFilter == '1') ? 'selected' : ''; ?>>1</option>
+                                    <option value="2" <?php echo ($experienceFilter == '2') ? 'selected' : ''; ?>>2</option>
+                                    <option value="3" <?php echo ($experienceFilter == '3') ? 'selected' : ''; ?>>3</option>
+                                    <option value="4+" <?php echo ($experienceFilter == '4+') ? 'selected' : ''; ?>>4+</option>
                                 </select>
                             </div>
 
                             <div class="field-wrapper flex-1 d-flex flex-column gap-4">
                                 <p class="body-m-normal">Languages</p>
-                                <?php
-                                echo '<select id="languages-select" name="languages[]" multiple>';
+                                <?php echo '<select id="languages-select" name="languages[]" multiple>';
                                 $languages = ['English', 'Ukrainian', 'Spanish'];
                                 foreach ($languages as $language) {
                                     $isSelected = in_array($language, $selectedLanguages);
@@ -89,17 +74,15 @@ require_once './partials/site/header.php';
                                 echo '</select>';
                                 ?>
                             </div>
-
                         </div>
                         <div class="search-btn">
                             <button class="btn-large border-radius-12 surface-action text-on-action">Search</button>
+                            <span>Response rate: <b style="color: red"><?= $responseRate?></b> Time-To-Fill in minutes: <b style="color: red"><?= $timeToFill?></b></span>
                         </div>
                     </form>
-
                 </div>
 
                 <div class="user-list d-flex flex-column gap-12">
-
                     <?php while ($row = $result->fetch_assoc()): ?>
                         <div class="user-item surface-white padding-40 border-radius-12">
                             <div class="user-item__header user-header d-flex justify-content-between align-items-center">
@@ -118,8 +101,7 @@ require_once './partials/site/header.php';
                                         </p>
                                     </div>
                                 </div>
-                                <div
-                                    class="user-header__skills d-flex align-items-center gap-8 user-skills text-secondary caption-strikethrough">
+                                <div class="user-header__skills d-flex align-items-center gap-8 user-skills text-secondary caption-strikethrough">
                                     <?php
                                     $skills = $row['skills'];
                                     $skillsArray = explode(', ', $skills);
@@ -130,10 +112,13 @@ require_once './partials/site/header.php';
                                         }
                                     }
                                     ?>
-
                                 </div>
-                                <a href="/info-user?id=<?= $row['user_id'] ?>"
-                                    class="btn-large padding-bottom surface-action border-radius-12 text-on-action">Details</a>
+
+                                <?php if($row['unique_new_resume_id']):?>
+                                    <a href="/info-user?newResumeId=<?= $row['unique_new_resume_id'] ?>" class="btn-large padding-bottom surface-action border-radius-12 text-on-action">Details</a>
+                                <?php else:?>
+                                    <a href="/info-user?id=<?= $row['user_id'] ?>" class="btn-large padding-bottom surface-action border-radius-12 text-on-action">Details</a>
+                                <?php endif;?>
                             </div>
                         </div>
                     <?php endwhile; ?>
@@ -142,5 +127,5 @@ require_once './partials/site/header.php';
         </div>
     </section>
 </main>
-    </div>
+</div>
 <?php require_once './partials/site/footer.php'; ?>

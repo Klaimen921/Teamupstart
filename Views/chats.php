@@ -1,6 +1,4 @@
-<?php
-require_once './partials/site/header.php';
-?>
+<?php require_once './partials/site/header.php'; ?>
 <main class="d-flex flex-column gap-40">
     <section class="profile-section">
         <div class="container">

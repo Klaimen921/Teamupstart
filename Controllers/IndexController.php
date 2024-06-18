@@ -124,6 +124,8 @@ class IndexController
         ];
 
         $result = (new Resume)->getSearch($data);
+        $responseRate = (new User)->getRate($result->num_rows);
+        $timeToFill = (new Resume)->getMediumTime();
 
         include "Views/{$view}.php";
     }
@@ -237,10 +239,18 @@ class IndexController
            exit();
        }
 
-       $id = $_GET['id'];
+       $resumeFromApi = false;
+       if (isset($_GET['newResumeId'])) {
+           $resumeFromApi = true;
+           $usersData     = (new Resume)->checkNewResumeById($_GET['newResumeId']);
+           $users         = ['name' => 'resume from api', 'email' => ''];
+       }
 
-       $users     = (new User)->getByUserId($id);
-       $usersData = (new Resume)->getByUserId($id);
+       if (isset($_GET['id'])) {
+           $id = $_GET['id'];
+           $users     = (new User)->getByUserId($id);
+           $usersData = (new Resume)->getByUserId($id);
+       }
 
        include "Views/{$view}.php";
    }
@@ -371,21 +381,51 @@ class IndexController
 
     public function startChat()
     {
+        $status = false;
+        $data = '';
         if (isset($_POST['chat_id']) && isset($_POST['message']) && isset($_POST['sender_id'])) {
-            $chatId   = intval($_POST['chat_id']);
-            $senderId = intval($_POST['sender_id']);
-
-            $sendMessage = (new Chat)->send($chatId, $senderId, $_POST['message']);
+            $chatId      = intval($_POST['chat_id']);
+            $senderId    = intval($_POST['sender_id']);
+            $message     = $_POST['message'];
+            $sendMessage = (new Chat)->send($chatId, $senderId, $message);
 
             if ($sendMessage['success']) {
-                header('Refresh:1; url=' . $_SERVER['HTTP_REFERER']);
-                echo 'Повідомлення успішно відправлено!';
+                $data = '<div class="chat-messages-item d-flex justify-content-end">
+                            <p class="user-mess navigation-label padding-8 border-radius-12 surface-disabled"> '. $message .' </p>
+                         </div>';
+
+                $status = true;
             } else {
-                header('Refresh:2; url=' . $_SERVER['HTTP_REFERER']);
-                echo $sendMessage['error'];
+                $data = $sendMessage['error'];
             }
         }
+
+        echo json_encode(['status' => $status, 'data' => $data]);
     }
+
+    public function longPoolingChat()
+    {
+        $currentUserId = $_SESSION['user_id'];
+        $otherUserId   = $_POST['other_user_id'];
+
+        $result = (new Chat)->getQueryResult($currentUserId, $otherUserId);
+
+        if ($result->num_rows > 0) {
+            $chat    = $result->fetch_assoc();
+            $chatId = $chat['id'];
+        } else {
+            $chatId = (new Chat)->create($currentUserId, $otherUserId);
+        }
+
+        $messageList = (new Message)->getByChat($chatId);
+
+        ob_start();
+        include 'partials/chat.php';
+        $view = ob_get_clean();
+
+        echo json_encode($view);
+    }
+
 
     public function like(string $view)
     {
@@ -443,5 +483,47 @@ class IndexController
         $result  = (new Team)->find($userId);
 
         include "Views/{$view}.php";
+    }
+
+    public function getListNewResume()
+    {
+        $list = file_get_contents('api/resume.json');
+
+        header('Content-Type: application/json; charset=utf-8');
+        echo $list;
+    }
+
+    public function updateNewResume()
+    {
+        $list = file_get_contents('api/resume.json');
+        $status = 0;
+        $list = json_decode($list,true);
+
+        foreach ($list as $resumeId => $dataResume) {
+            $checkResult = (new Resume)->checkNewResumeExistsById($resumeId);
+            $data = [
+                'user_id'         => 0,
+                'adress'          => $dataResume['adress'],
+                'education'       => $dataResume['education'],
+                'languages_known' => $dataResume['lang'],
+                'certifications'  => $dataResume['certifications'],
+                'skills'          => $dataResume['skills'],
+                'description'     => $dataResume['description'],
+                'schedule'        => $dataResume['schedule'],
+                'from_price'      => (int) $dataResume['from_price'],
+                'age_user'        => '',
+                'experience'      => $dataResume['experience'],
+                'languages'       => $dataResume['languages'],
+                'status'          => $status,
+                'unique_new_resume_id' => $resumeId
+            ];
+            if ($checkResult->num_rows > 0) {
+                (new Resume)->update($data, true);
+            } else {
+                (new Resume)->create($data, true);
+            }
+        }
+
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
     }
 }

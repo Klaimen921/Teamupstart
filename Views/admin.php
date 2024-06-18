@@ -2,7 +2,6 @@
 require_once './partials/site/header.php';
 ?>
 <main class="d-flex flex-column gap-40">
-
     <section class="top-section user">
         <div class="container">
             <div class="user-info__wrapper d-flex align-items-center justify-content-between">
@@ -16,6 +15,10 @@ require_once './partials/site/header.php';
                     </div>
                 </div>
 
+                <form class="auth-form__field d-flex flex-column gap-8 send-message" action="update_new_resume" method="post">
+                    <button class="btn-form btn-large surface-action text-on-action" type="submit">Оновити нові резюме</button>
+                </form>
+
                 <a href="/logout" class="user__log-out btn-large text-secondary">
                     Log out
                 </a>
@@ -23,17 +26,23 @@ require_once './partials/site/header.php';
 
             <section class="list-resume d-flex flex-column gap-12">
                 <?php foreach ($result as $res): ?>
-                    <div class="item-resume padding-16  d-flex align-items-center justify-content-between border-radius-6">
-                        <h5><?= $res['name'] ?></h5>
-                        <a href="/info-user?id=<?= $res['user_id'] ?>">Деталі</a>
-                    </div>
+                    <?php if($res['unique_new_resume_id']):?>
+                        <div class="item-resume padding-16  d-flex align-items-center justify-content-between border-radius-6">
+                            <h5><?= $res['name'] ?></h5>
+                            <a href="/info-user?newResumeId=<?= $res['unique_new_resume_id'] ?>">Деталі</a>
+                        </div>
+                    <?php else:?>
+                        <div class="item-resume padding-16  d-flex align-items-center justify-content-between border-radius-6">
+                            <h5><?= $res['name'] ?></h5>
+                            <a href="/info-user?id=<?= $res['user_id'] ?>">Деталі</a>
+                        </div>
+                <?php endif;?>
                 <?php endforeach; ?>
             </section>
         </div>
     </section>
 </main>
 </div>
-
 <div class="alert-messages">
     <div class="alert-messages__item status-green border-radius-12 padding-24">
         <p class="text-on-action">Data updated successfully</p>
